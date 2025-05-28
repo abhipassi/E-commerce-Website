@@ -13,13 +13,10 @@ function Getproduct() {
     const [image2, setImage2] = useState(null);
     const [image3, setImage3] = useState(null);
 
-
-    const[currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 5
-
-
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    let [start, setStart] = useState(1)
+    let [end ,setEnd] = useState(5)
 
 
     useEffect(() => {
@@ -49,25 +46,34 @@ function Getproduct() {
     //   axios.get('http://localhost:8000/getproducts')
     //         .then(response =>{
     //           setProductList(response.data)
+    //           .then(()=>{
+    //             for(let i=0; i<productList.length; i++){
+    //               let a = productList[i]
+    //               // a.append({s_no: snumber})
+    //               console.log(a);
+    //             }
+    //           })
     // },[])})
+
     useEffect(() => {
-    fetchProducts();
-  }, []);
+  axios.get('http://localhost:8000/getproducts')
+    .then(response => {
+      const data = response.data;
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/getproducts");
-      setProductList(res.data);
 
-      
-      const maxPage = Math.ceil(res.data.length / itemsPerPage);
-      if (currentPage > maxPage) {
-        setCurrentPage(maxPage > 0 ? maxPage : 1);
+      for (let i = 0; i < data.length; i++) {
+       data[i].s_no = i + 1;  
       }
-    } catch (err) {
-      console.error("Error fetching products", err);
-    }
-  };
+
+      setProductList(data);  
+      // console.log(productList);
+    })
+    
+    .catch(error => {
+      console.error('Error fetching products:', error);
+    });
+}, [productList]);
+
 
     let handleEdit = (e) =>{
       setShowModal(true)
@@ -81,7 +87,7 @@ function Getproduct() {
     }
 
 
-       const handleCategoryChange = (e) => {
+    const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value)
   }
 
@@ -183,25 +189,19 @@ let updateProduct = async (e) => {
 };
 
 const handleNext = () => {
-    const totalPages = Math.ceil(productList.length / itemsPerPage);
-    if (currentPage < totalPages) {
-      setCurrentPage(prev => prev + 1);
-    }
-  };
-
-let handlePrev = () =>{
-if(currentPage > 1){
-setCurrentPage(prev => prev-1);
-}
+  setStart(start+= 5)
+  setEnd(end +=5)
 };
 
-const startIndex = (currentPage - 1 ) * itemsPerPage
-const endIndex = startIndex + itemsPerPage
-const paginatedProducts = productList.slice(startIndex , endIndex)
+let handlePrev = () =>{
+ setStart(start-= 5)
+  setEnd(end -=5)
+};
 
-
-
-
+let handleone = () =>{
+  setStart(2*5)
+  setEnd(5+5)
+}
 
     return(
         <>
@@ -282,20 +282,22 @@ const paginatedProducts = productList.slice(startIndex , endIndex)
       
            <table border='1' width='100%'>
         <th>#</th><th>Product Name</th> <th>Product Comapany</th> <th>Category</th> <th>SubCategory</th>  <th>Product Price</th> <th>Product Price before discout</th><th>Product Availability</th><th>Shipping Charges </th> <th>Product Images </th> <th>Actions</th>
-        {paginatedProducts &&
-        paginatedProducts.map((item, index) =>{
+        {productList &&
+        productList.map((item, index) =>{
+          
 
-          //  if(item.id >= start && item.id <= end){
+           if(item.s_no >= start && item.s_no <= end){
           //   // console.log(item);
             
             const cat = categorydata.find(id => id.id === item.category)
             const subCat = subcategory.find(id => id.id === item.subCategory)
-            return <tr><th>{startIndex+index+1}</th><th>{item.productName}</th><th>{item.productCompany}</th><th>{cat ? cat.categoryName :"Unknown"}</th> <th>{subCat ? subCat.subcategory : "Unknown"}</th>  <th>{item.productPrice}</th>  <th>{item.productPriceBeforeDiscount}</th>  <th>{item.productAvailability}</th><th>{item.shippingCharge}</th> <th> <img src= {item.productImage1} width={50} height ={50} alt="img1"/>  <img src= {item.productImage2} width={50} height ={50} alt="img2"/>  <img src= {item.productImage3} width={50} height ={50} alt="img3"/> </th>  <th><input type="button" value= 'Edit' id={item.id} onClick={handleEdit}/> <input type="button" value='Delete' id={item.id} onClick={handleDelete} /> </th></tr>
-          // }
+            return <tr><th>{item.s_no}</th><th>{item.productName}</th><th>{item.productCompany}</th><th>{cat ? cat.categoryName :"Unknown"}</th> <th>{subCat ? subCat.subcategory : "Unknown"}</th>  <th>{item.productPrice}</th>  <th>{item.productPriceBeforeDiscount}</th>  <th>{item.productAvailability}</th><th>{item.shippingCharge}</th> <th> <img src= {item.productImage1} width={50} height ={50} alt="img1"/>  <img src= {item.productImage2} width={50} height ={50} alt="img2"/>  <img src= {item.productImage3} width={50} height ={50} alt="img3"/> </th>  <th><input type="button" value= 'Edit' id={item.id} onClick={handleEdit}/> <input type="button" value='Delete' id={item.id} onClick={handleDelete} /> </th></tr>
+          }
         })}
       </table>
       <input type="button" onClick={handlePrev} value="Prev"/> &nbsp;
       <input type="button" onClick={handleNext} value="Next"/>
+      <input type="button" onClick={handleone} value="1"/>
 </>
     )
 }
