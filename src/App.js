@@ -10,6 +10,7 @@ import Category from "./components/admin/category.js";
 import Sub from './components/admin/subcategory.js'
 import Product from "./components/admin/products.js";
 import Getproduct from "./components/admin/mangaeproducts.js";
+import Cart from './components/pages/cart.js'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/cart" element={<Cart />} />
 
         {/* Admin Dashboard Routes */}
         <Route path="/admin" element={<DashboardLayout />}>

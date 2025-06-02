@@ -29,7 +29,7 @@ function Home() {
     <div className='flex flex-wrap justify-center gap-10 '>
       {productData.map((item) => (
          
-          <div className="relative flex flex-col my-6 hover:scale-105 transition-all ease-in-out bg-white shadow-sm border border-slate-200 rounded-lg w-96">
+          <div className="relative flex flex-col my-6 hover:scale-105 transition-all ease-in-out bg-white shadow-sm border border-slate-200 rounded-lg w-80">
             <div className="relative h-56 m-2.5 overflow-hidden text-white rounded-md">
               <img src={item.productImage1} />
             </div>
