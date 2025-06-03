@@ -40,8 +40,6 @@ function Getproduct() {
       );
     });
 
-
-
     // useEffect(() =>{
     //   axios.get('http://localhost:8000/getproducts')
     //         .then(response =>{
